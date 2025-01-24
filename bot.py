@@ -18,6 +18,32 @@ bankai = ['Daiguren Hyōrinmaru', 'Enma Kōrogi', 'Hakka no Togame', \
             'Senbonzakura Kageyoshi', 'Shatatsu Karagara Shigarami no Tsuji', 'Sōō Zabimaru', \
             'Tekken Tachikaze', 'Tensa Zangetsu', 'Zanka no Tachi']
 
+lyrics = ['if', 'you', 'wanna', 'see', 'some', 'action', 'gotta', 'be', 'the', \
+            'center', 'of', 'attraction', 'make', 'sure', 'that', 'they', 'got', \
+            'their', 'eyes', 'on', 'you', 'like', 'face', 'every', 'magazine', 'focus', \
+            'attention', 'name', 'one', 'must', 'mention', 'come', 'out', 'from', 'shadows', \
+            'it\'s', 'your', 'time', 'cause', 'tonight', 'is', 'night', 'for', 'everyone', \
+            'to', 'natural', 'know', 'this', 'where', 'be', 'it', 'destiny', 'sensational', \
+            'and', 'believe', 'what', 'you\'ve', 'waited', 'all', 'adore', 'so', 'baby', 'now', \
+            'feel', 'number', 'shining', 'bright', 'living', 'fantasy', 'brightest', 'star', \
+            'that\'s', 'ever', 'been']
+
+URL = "https://www.youtube.com/watch?v=1lsn2tT5yTc"
+
+def find_lyrics(message):
+    sentence = message.split(" ")
+    count = 0
+
+    for w in sentence:
+        for l in lyrics:
+            if w == l:
+                count += 1
+
+    if count >= 5:
+        return True
+    else:
+        return False
+
 @client.event
 async def on_ready():
     print(f'Logged in as {client.user}')
@@ -27,8 +53,12 @@ async def on_message(message):
     if message.author == client.user:
         return
     
-    if message.content.lower() == 'bankai':
+    if 'bankai' in message.content.lower():
         num = random.randint(0, len(bankai))
         await message.channel.send(bankai[num])
+
+    found = find_lyrics(message.content.lower())
+    if found:
+        await message.channel.send(URL)
 
 client.run(os.getenv("DISCORD_TOKEN"))
