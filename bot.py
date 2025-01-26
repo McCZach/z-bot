@@ -53,11 +53,13 @@ async def on_message(message):
     if message.author == client.user:
         return
     
-    if 'bankai' in message.content.lower():
-        num = random.randint(0, len(bankai))
+    text = message.content.lower()
+
+    if 'bankai' in text:
+        num = random.randint(0, len(bankai) - 1)
         await message.channel.send(bankai[num])
 
-    found = find_lyrics(message.content.lower())
+    found = find_lyrics(text)
     if found:
         await message.channel.send(URL)
 
