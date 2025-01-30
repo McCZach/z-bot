@@ -1,6 +1,7 @@
 import discord
 import os
 import random
+import time
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -10,27 +11,39 @@ intents.message_content = True
 
 client = discord.Client(intents=intents)
 
-bankai = ['Daiguren Hyōrinmaru', 'Enma Kōrogi', 'Hakka no Togame', \
-            'Hihiō Zabimaru', 'Jakuhō Raikōben', 'Kamishini no Yari', \
-            'Katen Kyōkotsu: Karamatsu Shinjū', 'Kinshara Butōdan', 'Kokujō Tengen Myō\'ō', \
-            'Kokujō Tengen Myō\'ō: Dangai Jōe', 'Konjiki Ashisogi Jizō', 'Konjiki Ashisogi Jizō: Matai Fukuin Shōtai', \
-            'Kōkō Gonryō Rikyū', 'Minazuki', 'Ryūmon Hōzukimaru', \
-            'Senbonzakura Kageyoshi', 'Shatatsu Karagara Shigarami no Tsuji', 'Sōō Zabimaru', \
-            'Tekken Tachikaze', 'Tensa Zangetsu', 'Zanka no Tachi']
-
-lyrics = ['if', 'you', 'wanna', 'see', 'some', 'action', 'gotta', 'be', 'the', \
-            'center', 'of', 'attraction', 'make', 'sure', 'that', 'they', 'got', \
-            'their', 'eyes', 'on', 'you', 'like', 'face', 'every', 'magazine', 'focus', \
-            'attention', 'name', 'one', 'must', 'mention', 'come', 'out', 'from', 'shadows', \
-            'it\'s', 'your', 'time', 'cause', 'tonight', 'is', 'night', 'for', 'everyone', \
-            'to', 'natural', 'know', 'this', 'where', 'be', 'it', 'destiny', 'sensational', \
-            'and', 'believe', 'what', 'you\'ve', 'waited', 'all', 'adore', 'so', 'baby', 'now', \
-            'feel', 'number', 'shining', 'bright', 'living', 'fantasy', 'brightest', 'star', \
-            'that\'s', 'ever', 'been']
+random.seed(time.time())
 
 URL = "https://www.youtube.com/watch?v=1lsn2tT5yTc"
 
+def get_bankai():
+    bankai = ""
+    try:
+        file = open('bankai.txt', 'r', encoding='utf-8')
+    except:
+        print('Could not access file.')
+    else:
+        num = random.randint(0, 20)
+        for i in range(num):
+            file.readline()
+        bankai += file.readline().rstrip('\n')
+
+    return bankai
+
+def get_lyrics():
+    lyrics = []
+
+    try:
+        file = open('lyrics.txt', 'r')
+    except:
+        print('Could not access file.')
+    else:
+        lyrics = file.read().split(',')
+
+    return lyrics
+
 def find_lyrics(message):
+    lyrics = get_lyrics()
+
     sentence = message.split(" ")
     count = 0
 
@@ -56,8 +69,8 @@ async def on_message(message):
     text = message.content.lower()
 
     if 'bankai' in text:
-        num = random.randint(0, len(bankai) - 1)
-        await message.channel.send(bankai[num])
+        msg = get_bankai()
+        await message.channel.send(msg)
 
     found = find_lyrics(text)
     if found:
